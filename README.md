@@ -43,5 +43,14 @@ Note: can refer to the tutorial.py
 
 - Note this plant is a nonlinear model which do not satisfy the assumption of Fundamental Lemma, the control performance may not be good.
 
-    
+Tutorial results:
+```
+     Feasible DeePC config: \
+     good: {RDeePC:False, Tini:1, Np:5, T:5, uloss:uus}, T merely influence the performance as long as T>=5 \
+     good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:du}, T will influence the steady-state \
+     good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:uus}, T will influence the steady-state \
+     good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:u}, T will influence the steady-state \
+```
+
+![peformance](https://github.com/QiYuan-Zhang/DeePCtools/assets/53491122/b662fe31-b2ee-43b2-9c38-98673b2ddfb1)
 
