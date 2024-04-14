@@ -35,8 +35,10 @@ Note: can refer to the tutorial.py
 
 ## II. Tutorial
 
-> A discrete-time nonlinear model of polynomial single-input-single-output system:
+> A discrete-time nonlinear model of polynomial single-input-single-output system: 
+
         `y(t) = 4 * y(t-1) * u(t-1) - 0.5 * y(t-1) + 2 * u(t-1) * u(t) + u(t)`
+
 > The description of this system can be found in [paper](https://ieeexplore.ieee.org/abstract/document/10319277)
 
 - Note this plant is a nonlinear model which do not satisfy the assumption of Fundamental Lemma, the control performance may not be good.
