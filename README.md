@@ -15,17 +15,27 @@ deeptools \
 
 ### 2. deepctools(*args, **kwargs)
 
-> Contains DeePC and Robust DeePC design
+> Including DeePC and Robust DeePC design
 > 
-> loss on u can be 'u': ||u||_R^2 'uus': ||u-us||_R^2 'du': ||du||_R^2
+> Objective function: $J = \Vert y - y^r \Vert_Q^2 + \Vert u_{loss} \Vert_R^2 + \mathcal{o}(\sigma_y, g)$
+>
+> $u_{loss}$ can be:
+> 
+>        'u': $u_{loss}=u$
+>
+>        'uus': $u_{loss}=u-u^r$
+>
+>        'du': $u_{loss}=\delta u$
 > 
 > > Construct the nlp solver for DeePC using casadi ipopt sovler
 > 
-> > only formulate the solver once
+> > only formulate the solver once at the first begining. 
+>
+> In the online loop, no need to reformulate the NLP problem which saves lots of computational time.
 > 
-> > when solve, provide, uini, yini parameters
+> > Each iteration, only need provide updated parameters: $u_{ini}$, $y_{ini}$.
 
-Note: can refer to the tutorial.py
+Note: There is a tutorial file to implement and use deepctools in **tutorial.py**.
 
 ### 3. getCasadiFunc()
 > Construct the Function using casadi
