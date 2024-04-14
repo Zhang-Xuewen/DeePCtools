@@ -3,10 +3,10 @@ Developed a wrapped package for DeePC implementation, such as mpctools.
 Also contains some general functions for building casadi Functions and discrete models.
 
 ## I. Functions
-deeptools
-    |___hankel
-    |___deepctools
-    |___getCasadiFunc
+deeptools \
+    |___hankel \
+    |___deepctools \
+    |___getCasadiFunc \
     |___DiscreteSimulator
 
 ### 1. hankel(x, L)
