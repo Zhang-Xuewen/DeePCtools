@@ -135,6 +135,7 @@ Notice:
 
 - This system is adopted from the [paper](https://ieeexplore.ieee.org/abstract/document/10319277).
 - Note this plant is a nonlinear model which do not satisfy the assumption of Fundamental Lemma, the control performance can be bad.
+- For your own project, you can replace this plant to your own system.
 
 
 ### 2. DeePC designs
@@ -143,7 +144,7 @@ Within the sample code, you have the option to specify either DeePC or Robust De
 
 ### 3. Tutorial results
 
- Feasible DeePC config: 
+Feasible DeePC config: 
 ```
      DeePC        |  {Tini:1, Np:5, T:5, uloss:uus}    | T merely influence the performance as long as T>=5 
      Robust DeePC |  {Tini:1, Np:1, T:600, uloss:du}   | T will influence the steady-state loss 
