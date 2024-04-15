@@ -10,7 +10,7 @@ This package operates within the Python framework.
 
 - Numpy
 - Matplotlib
-- CasADi &emsp; &emsp     <-- 3 <= __version__ <= 4
+- CasADi &emsp; &emsp;     <-- 3 <= __version__ <= 4
 
 ### 2. Usage
 
