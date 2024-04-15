@@ -1,13 +1,13 @@
 # DeePCtools
-Developed a wrapped package for DeePC implementation, such as mpctools.
-Also contains some general functions for building casadi Functions and discrete models.
+Developed a wrapped package for Data-enabled predictive control (DeePC) implementation, such as mpctools.
 
 ## I. Functions
-deeptools \
-    |___hankel \
-    |___deepctools \
-    |___getCasadiFunc \
-    |___DiscreteSimulator
+.
+├── deeptools \
+│   ├── hankel \
+│   ├── deepctools \
+│   ├── getCasadiFunc \
+│   └── DiscreteSimulator
 
 ### 1. hankel(x, L)
 
@@ -47,7 +47,7 @@ Note: There is a tutorial file to implement and use deepctools in **tutorial.py*
 
 > A discrete-time nonlinear model of polynomial single-input-single-output system: 
 
-        `y(t) = 4 * y(t-1) * u(t-1) - 0.5 * y(t-1) + 2 * u(t-1) * u(t) + u(t)`
+        ```y(t) = 4 * y(t-1) * u(t-1) - 0.5 * y(t-1) + 2 * u(t-1) * u(t) + u(t)```
 
 > The description of this system can be found in [paper](https://ieeexplore.ieee.org/abstract/document/10319277)
 
