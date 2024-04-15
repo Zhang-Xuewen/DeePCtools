@@ -58,7 +58,7 @@ Construct Hankel matrix of order L based on data x
 
 Formulate and solve the DeePC problem, including **DeePC** and **Robust DeePC** design.
 
-Construct the nlp solver for DeePC using CaSAdi IPOPT sovler, only formulate the solver once at the first beginning. 
+Construct the nlp solver for DeePC using CasADi IPOPT sovler, only formulate the solver once at the first beginning. 
 
 In the online loop, no need to reformulate the NLP problem which saves lots of computational time.
 
