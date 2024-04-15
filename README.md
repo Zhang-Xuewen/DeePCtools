@@ -111,7 +111,7 @@ Solve the optimization problem for one step, and output the optimized control in
 
 ### 3. getCasadiFunc(*args, **kwargs)
 
-Construct the Function using casadi
+Construct the Function using CasADi
 
 ### 4. DiscreteSimulator(*args, **kwargs)
 
