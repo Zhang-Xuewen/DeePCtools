@@ -2,12 +2,14 @@
 Developed a wrapped package for Data-enabled predictive control (DeePC) implementation, such as mpctools.
 
 ## I. Functions
-. \
-├── deeptools \
-│   ├── hankel \
-│   ├── deepctools \
-│   ├── getCasadiFunc \
+```
+. 
+├── deeptools 
+│   ├── hankel 
+│   ├── deepctools 
+│   ├── getCasadiFunc 
 │   └── DiscreteSimulator
+```
 
 ### 1. hankel(x, L)
 
