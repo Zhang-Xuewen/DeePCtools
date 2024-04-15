@@ -1,7 +1,7 @@
 # DeePCtools
 A wrapped package for Data-enabled predictive control (DeePC) implementation. Including **DeePC** and **Robust DeePC** design with multiple objective functions.
 
-If you have questions, remarks, technical issues etc. feel free to use the issues page of this repository. We are looking forward to your feedback and the discussion.
+If you have questions, remarks, technical issues etc. feel free to use the issues page of this repository. I am looking forward to your feedback and the discussion.
 ## I. How to use
 
 This package operates within the Python framework.
