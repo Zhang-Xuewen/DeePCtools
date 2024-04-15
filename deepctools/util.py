@@ -1,9 +1,9 @@
 """
-Name: Modeltools.py
+Name: util.py
 Author: Xuewen Zhang
 Date:at 13/04/2024
 version: 1.0.0
-Description: Toolbox to formulate the casadi Function
+Description: utils of deepctools
 """
 import casadi as cs
 import numpy as np

@@ -1,7 +1,9 @@
 """
-Import common functions here to make things a bit easier for the users.
-
-Also check the version of Casadi and make sure it is new enough but not too
+Name: __init__.py
+Author: Xuewen Zhang
+Date:at 13/04/2024
+version: 1.0.0
+Description: Import common functions here to make things a bit easier for the users. Also check the version of Casadi and make sure it is new enough but not too
 new (due to backward incompatibility in Casadi).
 """
 
@@ -11,6 +13,7 @@ __version__ = "1.0.0"
 # Check Casadi version to make sure it's up to date.
 _MIN_CASADI_VERSION = "3.0"
 _MAX_CASADI_VERSION = "4.0"
+
 def _getVersion(vstring):
     """Returns a tuple with version number."""
     parts = vstring.split(".")

@@ -2,10 +2,7 @@
 Name: tutorial.py
 Author: Xuewen Zhang
 Date:at 19/03/2024
-Project: Koopman-based DeePC
-Description: Solve DeePC control using built Koopman model
-Packages:
-Packages Dir:
+Description: A tutorial example to illustrate how to use deepctools
 """
 
 import numpy as np
@@ -103,9 +100,9 @@ def main():
     # DeePC config
     # feasible config:
     # good: {RDeePC:False, Tini:1, Np:5, T:5, uloss:uus}, T merely influence the performance as long as T>=5
-    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:du}, T will influence the steady-state
-    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:uus}, T will influence the steady-state
-    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:u}, T will influence the steady-state
+    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:du}, T will influence the steady-state loss
+    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:uus}, T will influence the steady-state loss
+    # good: {RDeePC:True, Tini:1, Np:1, T:600, uloss:u}, T will influence the steady-state loss
     RDeePC = False         # if true, then Robust DeePC, if false, then DeePC
     uloss = "uus"          # loss of u in objective function, can be 'u', 'uus', 'du'
     Tini = 1
