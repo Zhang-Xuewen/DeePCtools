@@ -48,10 +48,9 @@ class deepctools():
                     ylb <= y <= yub                       |  uloss = (u)   or    (u - uref)    or    (du)
          ----------------------------------------------------------------------------------------------------------
                         Functions                |                            Usage
-            hankel(x, L)                         |  construct Hankel matrix based on given data x and order L
             initialize_DeePCsolver(uloss, opts)  |  construct DeePC solver
             initialize_RDeePCsolver(uloss, opts) |  construct Robust DeePC solver
-            solver_step(uini, yini, g0_guess)    |  solve the optimization problem one step
+            solver_step(uini, yini)    |  solve the optimization problem one step
          ----------------------------------------------------------------------------------------------------------
     """
 
@@ -155,6 +154,7 @@ class deepctools():
 
 
     def _checkshape(self, x, x_shape):
+        """Check if the variable has the correct shape"""
         if x is not None:
             if x.shape != x_shape:
                 raise ValueError(f'Inconsistent detected: {x.shape} != {x_shape}!')

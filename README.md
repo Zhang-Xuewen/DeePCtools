@@ -14,7 +14,7 @@ This package operates within the Python framework.
 
 ### 2. Usage
 
-Download the deepctools and save it to your project directory.
+Download the *deepctools* file and save it to your project directory.
 
 ```
     import deepctools
@@ -24,11 +24,14 @@ Then you can use the deepctools in your python project.
 ## II. Functions
 ```
 . 
-├── deeptools 
-│   ├── hankel 
-│   ├── deepctools 
-│   ├── getCasadiFunc 
-│   └── DiscreteSimulator
+└── deeptools 
+    ├── hankel 
+    ├── deepctools 
+    │   ├── initialize_DeePCsolver
+    │   ├── initialize_RDeePCsolver
+    │   └── solver_step
+    ├── getCasadiFunc 
+    └── DiscreteSimulator
 ```
 
 ### 1. hankel(x, L)
@@ -61,6 +64,48 @@ Each iteration, only need provide updated parameters: $u_{ini}$, $y_{ini}$.
 ``` 
 
 There is a tutorial file in [`tutorial.py`](./tutorial.py).
+
+#### a. initialize_DeePCsolver(uloss, opts)  
+
+Formulate the DeePC design with different loss on control inputs.
+
+The optmization problem can be formulated as:
+
+```
+        Standard DeePC design:                        |            Equivalent expression
+     min J  =  || y - yref ||_Q^2 + || uloss ||_R^2   |   min J  =  || Uf*g - yref ||_Q^2 + || uloss ||_R^2
+         s.t.   [Up]       [uini]                     |      s.t.   Up * g = uini
+                [Yp] * g = [yini]                     |             Yp * g = yini
+                [Uf]       [ u  ]                     |             ulb <= u <= uub
+                [Yf]       [ y  ]                     |             ylb <= y <= yub
+                ulb <= u <= uub                       |
+                ylb <= y <= yub                       |  uloss = (u)   or    (u - uref)    or    (du)
+```
+
+
+#### b. initialize_RDeePCsolver(uloss, opts)  
+
+Formulate the Robust DeePC design with slack variables and different loss on control inputs.
+
+The optmization problem can be formulated as:
+
+```
+              Robust DeePC design:                    |            Equivalent expression
+     min J  =  || y - yref ||_Q^2 + || uloss ||_R^2   |   min J  =  || Uf*g - ys ||_Q^2 + || uloss ||_R^2
+                 + lambda_y||sigma_y||_2^2            |             + lambda_y||Yp*g-yini||_2^2
+                 + lambda_g||g||_2^2                  |             + lambda_g||g||_2^2
+         s.t.   [Up]       [uini]     [   0   ]       |      s.t.   Up * g = uini
+                [Yp] * g = [yini]  +  [sigma_y]       |             ulb <= u <= uub
+                [Uf]       [ u  ]     [   0   ]       |             ylb <= y <= yub
+                [Yf]       [ y  ]     [   0   ]       |
+                ulb <= u <= uub                       |
+                ylb <= y <= yub                       |  uloss = (u)   or    (u - uref)    or    (du)
+```
+
+#### c. solver_step(uini, yini) 
+
+Solve the optimization problem for one step, and output the optimized control inputs, operator g, and solving time.
+
 
 ### 3. getCasadiFunc(*args, **kwargs)
 
