@@ -41,7 +41,7 @@ Under this file and function, there is detailed explanation of the usage, inputs
 Construct Hankel matrix of order L based on data x 
 
 - The data x: $x \in \mathbb{R}^{T, n_x}$
-- The Hankel matrix: $H_L(x) \in \mathbb{R}^{n_x  L \times T - L + 1}
+- The Hankel matrix: $H_L(x) \in \mathbb{R}^{n_x  L \times T - L + 1}$
 
 ### 2. deepctools(*args, **kwargs)
 
