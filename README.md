@@ -66,3 +66,9 @@ Tutorial results:
 
 ![peformance](https://github.com/QiYuan-Zhang/DeePCtools/assets/53491122/b662fe31-b2ee-43b2-9c38-98673b2ddfb1)
 
+
+## License
+
+The project is released under the APACHE license. See [LICENSE](LICENSE) for details.
+
+Part of the project is modified from [PyDeePC](https://github.com/rssalessio/PyDeePC)
