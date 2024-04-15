@@ -21,7 +21,7 @@ Download the *deepctools* file and save it to your project directory.
 ```
 Then you can use the deepctools in your python project.
 
-## II. Functions
+## II. deepctools toolbox organization
 ```
 . 
 └── deeptools 
@@ -33,6 +33,8 @@ Then you can use the deepctools in your python project.
     ├── getCasadiFunc 
     └── DiscreteSimulator
 ```
+
+Under this file and function, there is detailed explanation of the usage, inputs, outputs of the functions. 
 
 ### 1. hankel(x, L)
 
