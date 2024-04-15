@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "deepctools"
+version = "1.0.3"
+authors = [
+  { name="Xuewen Zhang", email="xuewen.zhang741@outlook.com"}
+]
+maintainers = [
+  { name="Xuewen Zhang", email="xuewen.zhang741@outlook.com"}
+]
+dependencies = [
+  "numpy",
+  "casadi>3.0.0",
+]
+description = "A wrapped package for Data-enabled predictive control (DeePC) implementation. Including DeePC and Robust DeePC design with multiple objective functions."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["MPC", "Data-driven control", "data-driven MPC", "model-free-control", "DeePC", "data-enabled predictive control", 'Robust DeePC', "RDeePC"]
+requires-python = ">=3.7"
+classifiers = [
+    # How mature is this project? Common values are
+    #   3 - Alpha
+    #   4 - Beta
+    #   5 - Production/Stable
+    "Development Status :: 4 - Beta",
+
+    # Indicate who your project is intended for
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+
+    # Pick your license as you wish
+    "License :: OSI Approved :: Apache Software License",
+
+    # Specify the Python versions you support here.
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+
+]
+
+[project.urls]
+Homepage = "https://github.com/QiYuan-Zhang/DeePCtools"
+Issues = "https://github.com/QiYuan-Zhang/DeePCtools/issues"
+Introduction = "https://qiyuan-zhang.github.io/my-toolbox/2024/04/15/Developed-deepctools.html"

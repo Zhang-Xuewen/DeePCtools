@@ -1,10 +1,16 @@
+
+> Introduction to my developed deepctools toolbox for data-enabled predictive control.
+> 
+> Github project: [link](https://github.com/QiYuan-Zhang/DeePCtools) 
+> 
+> Introduction: [link](https://qiyuan-zhang.github.io/my-toolbox/2024/04/15/Developed-deepctools.html)
+
+---
+
 # DeePCtools
 A wrapped package for Data-enabled predictive control (DeePC) implementation. Including **DeePC** and **Robust DeePC** design with multiple objective functions.
 
 If you have questions, remarks, technical issues etc. feel free to use the issues page of this repository. I am looking forward to your feedback and the discussion.
-
-> Introduction: [link](https://qiyuan-zhang.github.io/my-toolbox/2024/04/15/Developed-deepctools.html)
-
 ## I. How to use
 
 This package operates within the Python framework.
@@ -41,14 +47,14 @@ Then you can use the deepctools in your python project.
 
 Under this file and function, there is detailed explanation of the usage, inputs, outputs of the functions. 
 
-### 1. hankel(x, L)
+### 1. hankel
 
 Construct Hankel matrix of order L based on data x 
 
 - The data x: $x \in \mathbb{R}^{T, n_x}$
 - The Hankel matrix: $H_L(x) \in \mathbb{R}^{n_x  L \times T - L + 1}$
 
-### 2. deepctools(*args, **kwargs)
+### 2. deepctools
 
 Formulate and solve the DeePC problem, including **DeePC** and **Robust DeePC** design.
 
@@ -70,9 +76,9 @@ Each iteration, only need provide updated parameters: $u_{ini}$, $y_{ini}$.
         'du': delta u
 ``` 
 
-There is a tutorial file in [`tutorial.py`](./tutorial.py).
+There is a tutorial file in [`tutorial.py`](https://github.com/QiYuan-Zhang/DeePCtools/blob/8dbc2458966214bf9885f4d622e20c3b840641e2/tutorial.py).
 
-#### a. initialize_DeePCsolver(uloss, opts)  
+a. initialize_DeePCsolver(uloss, opts)  
 
 Formulate the DeePC design with different loss on control inputs.
 
@@ -90,7 +96,7 @@ The optmization problem can be formulated as:
 ```
 
 
-#### b. initialize_RDeePCsolver(uloss, opts)  
+b. initialize_RDeePCsolver
 
 Formulate the Robust DeePC design with slack variables and different loss on control inputs.
 
@@ -109,16 +115,16 @@ The optmization problem can be formulated as:
                 ylb <= y <= yub                       |  uloss = (u)   or    (u - uref)    or    (du)
 ```
 
-#### c. solver_step(uini, yini) 
+c. solver_step
 
 Solve the optimization problem for one step, and output the optimized control inputs, operator g, and solving time.
 
 
-### 3. getCasadiFunc(*args, **kwargs)
+### 3. getCasadiFunc
 
 Construct the Function using CasADi
 
-### 4. DiscreteSimulator(*args, **kwargs)
+### 4. DiscreteSimulator
 
 Construct the discrete system simulator for predicting next step
 
@@ -158,10 +164,23 @@ Feasible DeePC config:
 ```
 
 Figure of control peformance under first config:
-
 ![peformance](https://github.com/QiYuan-Zhang/DeePCtools/assets/53491122/b662fe31-b2ee-43b2-9c38-98673b2ddfb1)
 
 
 ## License
 
-The project is released under the APACHE license. See [LICENSE](LICENSE) for details.
+The project is released under the APACHE license. See [LICENSE](https://github.com/QiYuan-Zhang/DeePCtools/blob/8dbc2458966214bf9885f4d622e20c3b840641e2/LICENSE) for details.
+
+Copyright 2024 Xuewen Zhang
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
