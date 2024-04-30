@@ -342,7 +342,7 @@ def main2():
                 uini = np.concatenate((uini[1:, :], np.array([u_cur]).reshape(-1, 1)), axis=0)
                 yini = np.concatenate((yini[1:, :], np.array([y_cur]).reshape(-1, 1)), axis=0)
 
-                cost = np.linalg.norm(y_cur - yref_all[i * Nhold + j])
+                cost = np.linalg.norm(y_cur - yref_all[i + Tini + j])
                 cost_y.append(cost)
 
             # update tqdm progress bar
