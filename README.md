@@ -58,7 +58,7 @@ Construct the nlp solver for DeePC using CasADi IPOPT sovler, only formulate the
 
 In the online loop, no need to reformulate the NLP problem which saves lots of computational time.
 
-Each iteration, only need provide updated parameters: $u_{ini}$, $y_{ini}$.
+Each iteration, only need provide updated parameters: $u_{ini}$, $y_{ini}$ (, $u_{ref}$, $y_{ref}$ if set-point changes during control).
 
 > Objective function: $J = \Vert y - y^r \Vert_Q^2 + \Vert u_{loss} \Vert_R^2 + \mathcal{o}(\sigma_y, g)$
 

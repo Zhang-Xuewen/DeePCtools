@@ -36,7 +36,7 @@ elif _getVersion(casadi.__version__) > _getVersion(_MAX_CASADI_VERSION):
 
 # Add modules and some specific functions.
 # from . import DeePCtools
-from .util import hankel
+from .util import hankel, data_to_step
 from .DeePCtools import deepctools
 from .Modeltools import getCasadiFunc, DiscreteSimulator
 

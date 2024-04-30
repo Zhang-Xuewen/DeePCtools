@@ -79,3 +79,31 @@ def rk4(f, x0, par, Delta=1, M=1):
         x = x + (k1 + 2 * k2 + 2 * k3 + k4) * h / 6
         j += 1
     return x
+
+
+def data_to_step(x, t=None):
+        """
+            Transform the sequential data to step data
+            data: (data_size, x_dim)
+            t: (data_size)
+        """
+
+        x = x.T
+        dim, n = x.shape
+        x_step = np.zeros((dim, 2*n))
+
+        for i in range(n):
+            x_step[:, 2 * i] = x[:, i]
+            x_step[:, 2 * i + 1] = x[:, i]
+
+        if t is not None:
+            t_step = np.zeros(2*len(t))
+            for i in range(len(t)):
+                t_step[2 * i] = t[i]
+                t_step[2 * i + 1] = t[i]
+            ts = t[1]-t[0]
+            t_step = t_step[1:]
+            t_step = np.concatenate((t_step, np.array([t_step[-1] + ts])))
+            return x_step.T, t_step
+        else:
+            return x_step.T

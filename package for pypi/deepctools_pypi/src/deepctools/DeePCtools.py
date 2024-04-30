@@ -54,8 +54,8 @@ class deepctools():
          ----------------------------------------------------------------------------------------------------------
     """
 
-    def __init__(self, u_dim, y_dim, T, Tini, Np, ys, ud, yd, Q, R, us=None, lambda_g=None, lambda_y=None,
-                 ineqconidx=None, ineqconbd=None):
+    def __init__(self, u_dim, y_dim, T, Tini, Np, ud, yd, Q, R, lambda_g=None, lambda_y=None,
+                 sp_change=False, us=None, ys=None, ineqconidx=None, ineqconbd=None):
         """
             ------Initialize the system parameters and DeePC config------
                  u_dim: [int]             |  the dimension of control inputs
@@ -63,14 +63,17 @@ class deepctools():
                      T: [int]             |  the length of offline collected data
                   Tini: [int]             |  the initialization length of the online loop
                     Np: [int]             |  the length of predicted future trajectories
-                    us: [array]           |  set-point of u;  size (1, u_dim)
-                    ys: [array]           |  set-point of y;  size (1, y_dim)
                     ud: [array]           |  history data collected offline to construct Hankel matrix; size (T, u_dim)
                     yd: [array]           |  history data collected offline to construct Hankel matrix; size (T, u_dim)
                      Q: [array]           |  the weighting matrix of controlled outputs y
                      R: [array]           |  the weighting matrix of control inputs u
               lambda_y: [array]           |  the weighting matrix of mismatch of controlled output y
               lambda_g: [array]           |  the weighting matrix of norm of operator g
+             sp_change: [bool]            |  whether the set-point of u and y change during control, 
+                                          |      if True, uref, yref will be parameters of the optimization problem
+                                          |      if False, can just give ys, us
+                    us: [array]           |  set-point of u;  size (1, u_dim), if sp_change=False, can just define us, ys
+                    ys: [array]           |  set-point of y;  size (1, y_dim), if sp_change=False, can just define us, ys
             ineqconidx: [dict|[str,list]] |  specify the wanted constraints for u and y, if None, no constraints
                                           |      e.g., only have constraints on u2, u3, {'u': [1,2]}; 'y' as well
              ineqconbd: [dict|[str,list]] |  specify the bounds for u and y, should be consistent with "ineqconidx"
@@ -89,10 +92,13 @@ class deepctools():
         self.lambda_y = lambda_y
         self.us = us
         self.ys = ys
-        self.yref = np.tile(ys, (Np, 1)).reshape(-1, 1)
-        self.uref = None
-        if us.any():
-            self.uref = np.tile(us, (Np, 1)).reshape(-1, 1)
+        self.sp_change = sp_change
+        if not sp_change:
+            self.yref = np.tile(ys, (Np, 1)).reshape(-1, 1)
+            if us.any():
+                self.uref = np.tile(us, (Np, 1)).reshape(-1, 1)
+            else:
+                self.uref = None
 
         self.Hud = util.hankel(ud, Tini + Np)
         self.Hyd = util.hankel(yd, Tini + Np)
@@ -129,17 +135,18 @@ class deepctools():
             lambda_y           |  (dim*Tini, dim*Tini)
             ------------------------------------------------------------
             Persistently Excitation condition:
-                g_dim >= u_dim * (Tini + Np): to satisfy
-                and the Hankel matrix of ud should be full row rank
-                which is u_dim * (Tini + Np)
+                1. g_dim >= u_dim * (Tini + Np)
+                2. the Hankel matrix of ud should be full row rank
+                   which is u_dim * (Tini + Np)
             ------------------------------------------------------------
         """
         self._checkshape(self.Up, tuple([self.u_dim * self.Tini, self.g_dim]))
         self._checkshape(self.Yp, tuple([self.y_dim * self.Tini, self.g_dim]))
         self._checkshape(self.Uf, tuple([self.u_dim * self.Np, self.g_dim]))
         self._checkshape(self.Yf, tuple([self.y_dim * self.Np, self.g_dim]))
-        self._checkshape(self.uref, tuple([self.u_dim * self.Np, 1]))
-        self._checkshape(self.yref, tuple([self.y_dim * self.Np, 1]))
+        if not self.sp_change:
+            self._checkshape(self.uref, tuple([self.u_dim * self.Np, 1]))
+            self._checkshape(self.yref, tuple([self.y_dim * self.Np, 1]))
         self._checkshape(self.Q, tuple([self.y_dim * self.Np, self.y_dim * self.Np]))
         self._checkshape(self.R, tuple([self.u_dim * self.Np, self.u_dim * self.Np]))
         self._checkshape(self.lambda_g, tuple([self.g_dim, self.g_dim]))
@@ -158,6 +165,7 @@ class deepctools():
         if x is not None:
             if x.shape != x_shape:
                 raise ValueError(f'Inconsistent detected: {x.shape} != {x_shape}!')
+
 
     def _init_ineq_cons(self, ineqconidx=None, ineqconbd=None):
         """
@@ -196,6 +204,7 @@ class deepctools():
             ubc = np.concatenate(ubc_list).flatten()
         return Hc, lbc.tolist(), ubc.tolist()
 
+
     def _init_variables(self):
         """
             Initialize variables of DeePC and RDeePC design
@@ -203,18 +212,25 @@ class deepctools():
             optimizing_target: g            |   decision variable
         """
         ## define casadi variables
-        self.parameters = ctools.struct_symSX([
-            (
-                ctools.entry('uini', shape=tuple([self.u_dim * self.Tini, 1])),
-                ctools.entry('yini', shape=tuple([self.y_dim * self.Tini, 1]))
-            )
-        ])
-
         self.optimizing_target = ctools.struct_symSX([
             (
                 ctools.entry('g', shape=tuple([self.g_dim, 1]))
             )
         ])
+        
+        parameters = [
+                ctools.entry('uini', shape=tuple([self.u_dim * self.Tini, 1])),
+                ctools.entry('yini', shape=tuple([self.y_dim * self.Tini, 1]))
+        ]
+        
+        if self.sp_change:
+            parameters.extend([
+                ctools.entry('uref', shape=tuple([self.u_dim * self.Np, 1])),
+                ctools.entry('yref', shape=tuple([self.y_dim * self.Np, 1])),
+            ])  
+        
+        self.parameters = ctools.struct_symSX(parameters)
+
 
     @timer
     def init_DeePCsolver(self, uloss='u', opts={}):
@@ -257,7 +273,11 @@ class deepctools():
             raise ValueError(f'NLP do not have enough degrees of freedom | Should: g_dim >= (u_dim + y_dim) * Tini, but got: {self.g_dim} <= {(self.u_dim + self.y_dim) * self.Tini}!')
 
         # define parameters and decision variable
-        uini, yini = self.parameters[...]
+        if self.sp_change:
+            uini, yini, uref, yref = self.parameters[...]
+        else:
+            uini, yini = self.parameters[...]
+            uref, yref = self.uref, self.yref
         g, = self.optimizing_target[...]  # data are stored in list [], notice that ',' cannot be missed
 
         ## J  =  || Uf * g - ys ||_Q^2 + || uloss ||_R^2
@@ -269,15 +289,15 @@ class deepctools():
         if uloss == 'u':
             ## QP problem
             H = self.Yf.T @ self.Q @ self.Yf + self.Uf.T @ self.R @ self.Uf
-            f = - self.Yf.T @ self.Q @ self.yref  # - self.Uf.T @ self.R @ uref
+            f = - self.Yf.T @ self.Q @ yref  # - self.Uf.T @ self.R @ uref
             obj = 0.5 * cs.mtimes(cs.mtimes(g.T, H), g) + cs.mtimes(f.T, g)
 
         if uloss == 'uus':
-            if self.uref is None:
+            if self.sp_change is False and self.uref is None:
                 raise ValueError("Do not give value of 'us', but required in objective function 'u-us'!")
             ## QP problem
             H = self.Yf.T @ self.Q @ self.Yf + self.Uf.T @ self.R @ self.Uf
-            f = - self.Yf.T @ self.Q @ self.yref - self.Uf.T @ self.R @ self.uref
+            f = - self.Yf.T @ self.Q @ yref - self.Uf.T @ self.R @ uref
             obj = 0.5 * cs.mtimes(cs.mtimes(g.T, H), g) + cs.mtimes(f.T, g)
 
         if uloss == 'du':
@@ -287,7 +307,7 @@ class deepctools():
             du = u_cur - u_prev
 
             y = cs.mtimes(self.Yf, g)
-            y_loss = y - self.yref
+            y_loss = y - yref
             obj = cs.mtimes(cs.mtimes(y_loss.T, self.Q), y_loss) + cs.mtimes(cs.mtimes(du.T, self.R), du)
 
         #### constrains
@@ -360,7 +380,11 @@ class deepctools():
 
 
         # define parameters and decision variable
-        uini, yini = self.parameters[...]
+        if self.sp_change:
+            uini, yini, uref, yref = self.parameters[...]
+        else:
+            uini, yini = self.parameters[...]
+            uref, yref = self.uref, self.yref
         g, = self.optimizing_target[...]  # data are stored in list [], notice that ',' cannot be missed
 
         ## J  =  || Uf * g - ys ||_Q^2 + || uloss ||_R^2 + lambda_y || Yp * g - yini||_2^2 + lambda_g || g ||_2^2
@@ -371,15 +395,15 @@ class deepctools():
         if uloss == 'u':
             ## QP problem
             H = self.Yf.T @ self.Q @ self.Yf + self.Uf.T @ self.R @ self.Uf + self.Yp.T @ self.lambda_y @ self.Yp + self.lambda_g
-            f = - self.Yp.T @ self.lambda_y @ yini - self.Yf.T @ self.Q @ self.yref  # - self.Uf.T @ self.R @ uref
+            f = - self.Yp.T @ self.lambda_y @ yini - self.Yf.T @ self.Q @ yref  # - self.Uf.T @ self.R @ uref
             obj = 0.5 * cs.mtimes(cs.mtimes(g.T, H), g) + cs.mtimes(f.T, g)
 
         if uloss == 'uus':
-            if self.uref is None:
+            if self.sp_change is False and self.uref is None:
                 raise ValueError("Do not give value of 'us', but required in objective function 'u-us'!")
             ## QP problem
             H = self.Yf.T @ self.Q @ self.Yf + self.Uf.T @ self.R @ self.Uf + self.Yp.T @ self.lambda_y @ self.Yp + self.lambda_g
-            f = - self.Yp.T @ self.lambda_y @ yini - self.Yf.T @ self.Q @ self.yref - self.Uf.T @ self.R @ self.uref
+            f = - self.Yp.T @ self.lambda_y @ yini - self.Yf.T @ self.Q @ yref - self.Uf.T @ self.R @ uref
             obj = 0.5 * cs.mtimes(cs.mtimes(g.T, H), g) + cs.mtimes(f.T, g)
 
         if uloss == 'du':
@@ -389,7 +413,7 @@ class deepctools():
             du = u_cur - u_prev
 
             y = cs.mtimes(self.Yf, g)
-            y_loss = y - self.yref
+            y_loss = y - yref
 
             sigma_y = cs.mtimes(self.Yp, g) - yini
             obj = cs.mtimes(cs.mtimes(y_loss.T, self.Q), y_loss) + cs.mtimes(cs.mtimes(du.T, self.R), du) + cs.mtimes(
@@ -415,19 +439,26 @@ class deepctools():
         self.solver = cs.nlpsol('solver', 'ipopt', nlp_prob, opts)
         self.lbc = lbc
         self.ubc = ubc
+        
 
-    def solver_step(self, uini, yini):
+    def solver_step(self, uini, yini, uref=None, yref=None):
         """
             solver solve the nlp for one time
             uini, yini:  [array]   | (dim*Tini, 1)
+            uref, yref:  [array]   | (dim*Np, 1) if sp_change=True
               g0_guess:  [array]   | (T-L+1, 1)
             return:
                 u_opt:  the optimized control input for the next Np steps
                  g_op:  the optimized operator g
                   t_s:  solving time
         """
-        parameters = np.concatenate((uini, yini))
-        g0_guess = np.linalg.pinv(np.concatenate((self.Up, self.Yp), axis=0)) @ parameters
+        if self.sp_change:
+            if uref is None or yref is None:
+                raise ValueError("Do not give value of 'uref' or 'yref', but required in objective function!")
+            parameters = np.concatenate((uini, yini, uref, yref))
+        else:
+            parameters = np.concatenate((uini, yini))
+        g0_guess = np.linalg.pinv(np.concatenate((self.Up, self.Yp), axis=0)) @ np.concatenate((uini, yini))
 
         t_ = time.time()
         sol = self.solver(x0=g0_guess, p=parameters, lbg=self.lbc, ubg=self.ubc)
