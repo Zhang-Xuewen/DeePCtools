@@ -164,6 +164,24 @@ Figure of control peformance under first config:
 ![peformance](https://github.com/QiYuan-Zhang/DeePCtools/assets/53491122/b662fe31-b2ee-43b2-9c38-98673b2ddfb1)
 
 
+## Version update
+
+#### 1.0.0: initial commit
+
+#### 1.0.1: debug
+
+#### 1.0.2: debug
+
+#### 1.0.3: debug
+
+#### 1.0.4: add uref, yref which can tracking varying set-points
+
+#### 1.0.5: debug
+
+#### 1.1.0: add SVD-based dimension reduction for DeePC
+
+
+
 ## License
 
 The project is released under the APACHE license. See [LICENSE](LICENSE) for details.

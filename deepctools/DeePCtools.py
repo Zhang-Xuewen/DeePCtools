@@ -55,7 +55,7 @@ class deepctools():
     """
 
     def __init__(self, u_dim, y_dim, T, Tini, Np, ud, yd, Q, R, lambda_g=None, lambda_y=None,
-                 sp_change=False, us=None, ys=None, ineqconidx=None, ineqconbd=None):
+                 sp_change=False, us=None, ys=None, ineqconidx=None, ineqconbd=None, svd=False):
         """
             ------Initialize the system parameters and DeePC config------
                  u_dim: [int]             |  the dimension of control inputs
@@ -78,6 +78,9 @@ class deepctools():
                                           |      e.g., only have constraints on u2, u3, {'u': [1,2]}; 'y' as well
              ineqconbd: [dict|[str,list]] |  specify the bounds for u and y, should be consistent with "ineqconidx"
                                           |      e.g., bound on u2, u3, {'lbu': [1,0], 'ubu': [10,5]}; lby, uby as well
+                   svd: [bool]            |  whether use SVD-based dimension reduction for DeePC
+                                          |      if True, the second dimension of Hankel matrix and dimension of g 
+                                          |      will be reduced to `the rank of the Hankel matrix with ud, and yd: rank([Hud, Hyd])`
         """
 
         self.u_dim = u_dim
@@ -85,7 +88,6 @@ class deepctools():
         self.T = T
         self.Tini = Tini
         self.Np = Np
-        self.g_dim = T - Tini - Np + 1
         self.Q = Q
         self.R = R
         self.lambda_g = lambda_g
@@ -93,6 +95,9 @@ class deepctools():
         self.us = us
         self.ys = ys
         self.sp_change = sp_change
+        self.svd = svd
+        self.ud = ud
+        self.yd = yd
         if not sp_change:
             self.yref = np.tile(ys, (Np, 1)).reshape(-1, 1)
             if us.any():
@@ -100,12 +105,19 @@ class deepctools():
             else:
                 self.uref = None
 
-        self.Hud = util.hankel(ud, Tini + Np)
-        self.Hyd = util.hankel(yd, Tini + Np)
+        if not self.svd:
+            self.Hud = util.hankel(ud, Tini + Np)
+            self.Hyd = util.hankel(yd, Tini + Np)
+        else:
+            self.Hud, self.Hyd, rank = self._svd_hankel(ud, yd)
+            print(f'>> SVD-based DeePC reduced g_dim: {T-Tini-Np+1} --> {rank}!')
         self.Up = self.Hud[:self.u_dim * self.Tini, :]
         self.Uf = self.Hud[self.u_dim * self.Tini:, :]
         self.Yp = self.Hyd[:self.y_dim * self.Tini, :]
         self.Yf = self.Hyd[self.y_dim * self.Tini:, :]
+        
+        self.g_dim = T - Tini - Np + 1 if not self.svd else rank
+        self.lambda_g = self.lambda_g[:self.g_dim, :self.g_dim] if self.svd else self.lambda_g
 
         # check variable size
         self._checkvar()
@@ -120,25 +132,27 @@ class deepctools():
         self.lbc = None
         self.ubc = None
 
+
     def _checkvar(self):
         """
-            ------Check the variables if consist with DeePC config------
+            ---------Check the variables if consist with DeePC config---------
                   Variables    |             Shape
-            -------------------|----------------------------------------
+            -------------------|----------------------------------------------
             ud, yd             |  (T, dim)
-            Hud, Hyd           |  (dim*L, T-L+1),  L = Tini + Np
+            Hud, Hyd           |  (dim*L, T-L+1), L = Tini + Np, if svd=False
+                               |  (dim*L, rank([Hud, Hyd]), if svd=True
             Up, Yp             |  (dim*Tini, T-L+1)
             Uf, Yf             |  (dim*Np, T-L+1)
             uref, yref         |  (dim*Np, 1)
             Q, R               |  (dim*Np, dim*Np)
             lambda_g           |  (T-L+1, T-L+1)
             lambda_y           |  (dim*Tini, dim*Tini)
-            ------------------------------------------------------------
+            ------------------------------------------------------------------
             Persistently Excitation condition:
                 1. g_dim >= u_dim * (Tini + Np)
                 2. the Hankel matrix of ud should be full row rank
                    which is u_dim * (Tini + Np)
-            ------------------------------------------------------------
+            ------------------------------------------------------------------
         """
         self._checkshape(self.Up, tuple([self.u_dim * self.Tini, self.g_dim]))
         self._checkshape(self.Yp, tuple([self.y_dim * self.Tini, self.g_dim]))
@@ -155,9 +169,12 @@ class deepctools():
         # Check PE condition
         if self.g_dim < self.u_dim * (self.Tini + self.Np):
             warnings.warn("Persistently Excitation (PE) condition not satisfied! Should g_dim >= u_dim * (Tini + Np)")
-        Hud_rank = np.linalg.matrix_rank(self.Hud)
+        if not self.svd:
+            Hud_rank = np.linalg.matrix_rank(self.Hud) 
+        else:
+            Hud_rank = np.linalg.matrix_rank(util.hankel(self.ud, self.Tini + self.Np))
         if Hud_rank != self.u_dim * (self.Tini + self.Np):
-            warnings.warn(f"Persistently Excitation (PE) condition not satisfied! Should Hankel matrix of ud is full row rank: u_dim * (Tini + Np) = {self.u_dim * (self.Tini + self.Np)} != {Hud_rank}!")
+            warnings.warn(f"Persistently Excitation (PE) condition not satisfied! Should Hankel matrix of ud is full row rank: u_dim * (Tini + Np) := {self.u_dim * (self.Tini + self.Np)} != {Hud_rank}!")
 
 
     def _checkshape(self, x, x_shape):
@@ -165,7 +182,20 @@ class deepctools():
         if x is not None:
             if x.shape != x_shape:
                 raise ValueError(f'Inconsistent detected: {x.shape} != {x_shape}!')
-
+    
+    
+    def _svd_hankel(self, ud, yd):
+        """ Implement svd-based dimension reduction for Hankel matrices """
+        Hud = util.hankel(ud, self.Tini + self.Np)
+        Hyd = util.hankel(yd, self.Tini + self.Np)
+        Hd = np.concatenate((Hud, Hyd), axis=0)
+        rank = np.linalg.matrix_rank(Hd)
+        U, S, VT = np.linalg.svd(Hd)
+        Hd_reduced = np.dot(U[:, :rank], np.diag(S))
+        Hud_reduced = Hd_reduced[:self.u_dim * (self.Tini + self.Np), :]
+        Hyd_reduced = Hd_reduced[self.u_dim * (self.Tini + self.Np):, :]
+        return Hud_reduced, Hyd_reduced, rank      
+    
 
     def _init_ineq_cons(self, ineqconidx=None, ineqconbd=None):
         """
