@@ -191,7 +191,10 @@ class deepctools():
         Hd = np.concatenate((Hud, Hyd), axis=0)
         rank = np.linalg.matrix_rank(Hd)
         U, S, VT = np.linalg.svd(Hd)
-        Hd_reduced = np.dot(U[:, :rank], np.diag(S))
+        # Ensure the the length of S is the same as the rank of Hd
+        threshold = S[rank]
+        S_ = S[S > threshold]
+        Hd_reduced = np.dot(U[:, :rank], np.diag(S_))
         Hud_reduced = Hd_reduced[:self.u_dim * (self.Tini + self.Np), :]
         Hyd_reduced = Hd_reduced[self.u_dim * (self.Tini + self.Np):, :]
         return Hud_reduced, Hyd_reduced, rank      

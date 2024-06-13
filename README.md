@@ -166,7 +166,7 @@ Figure of control peformance under first config:
 
 ## Version update
 
-#### 1.0.0: initial commit
+#### **1.0.0**: initial commit
 
 #### 1.0.1: debug
 
@@ -178,7 +178,9 @@ Figure of control peformance under first config:
 
 #### 1.0.5: debug
 
-#### 1.1.0: add SVD-based dimension reduction for DeePC
+#### **1.1.0**: add SVD-based dimension reduction for DeePC
+
+#### 1.1.1: debug SVD-based dimension reduction to ensure the rank properties
 
 
 
