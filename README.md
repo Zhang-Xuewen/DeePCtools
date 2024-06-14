@@ -182,6 +182,8 @@ Figure of control peformance under first config:
 
 #### 1.1.1: debug SVD-based dimension reduction to ensure the rank properties
 
+#### 1.1.2: debug SVD-based dimension reduction to ensure the rank properties
+
 
 
 ## License
