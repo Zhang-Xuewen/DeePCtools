@@ -124,6 +124,7 @@ Construct the Function using CasADi
 
 Construct the discrete system simulator for predicting next step
 
+
 ## III. Tutorial 
 
 This is a tutorial example to illustrate how to use the *deepctools* to develop and implement DeePC design to different processes.
@@ -166,26 +167,36 @@ Figure of control peformance under first config:
 
 ## Version update
 
-#### **1.0.0**: initial commit
+- 1.0.0: initial commit
 
-#### 1.0.1: debug
+- 1.0.1: debug
 
-#### 1.0.2: debug
+- 1.0.2: debug
 
-#### 1.0.3: debug
+- 1.0.3: debug
 
-#### 1.0.4: add uref, yref which can tracking varying set-points
+- 1.0.4: add uref, yref which can tracking varying set-points
 
-#### 1.0.5: debug
+- 1.0.5: debug
 
-#### **1.1.0**: add SVD-based dimension reduction for DeePC
+- 1.1.0: add SVD-based dimension reduction for DeePC
 
-#### 1.1.1: debug SVD-based dimension reduction to ensure the rank properties
+- 1.1.1: debug SVD-based dimension reduction to ensure the rank properties
 
-#### 1.1.2: debug SVD-based dimension reduction to ensure the rank properties
+- 1.1.2: debug SVD-based dimension reduction to ensure the rank properties
 
 
 
 ## License
 
-The project is released under the APACHE license. See [LICENSE](LICENSE) for details.
+This project is developed by `Xuewen Zhang` (xuewen.zhang741@outlook.com).
+
+The project is released under the APACHE license. See [LICENSE](https://github.com/QiYuan-Zhang/DeePCtools/blob/main/LICENSE) for details.
+
+Copyright 2024 Xuewen Zhang
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+```
+    http://www.apache.org/licenses/LICENSE-2.0
+```
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
