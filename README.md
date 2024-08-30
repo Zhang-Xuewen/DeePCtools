@@ -185,6 +185,21 @@ Figure of control peformance under first config:
 
 - 1.1.2: debug SVD-based dimension reduction to ensure the rank properties
 
+- 1.1.3: add applied papers in README.md
+
+## Application
+
+This project has been applied and used in the following papers:
+
+- **Deep DeePC: Data-enabled predictive control with low or no online optimization using deep learning**: [paper](https://arxiv.org/abs/2408.16338) & [source code](https://github.com/QiYuan-Zhang/Deep-DeePC)
+```
+    @article{zhang2024deepdeepc,
+    title={Deep DeePC: Data-enabled predictive control with low or no online optimization using deep learnin},
+    author={Zhang, Xuewen and Zhang, Kaixiang and Li, Zhaojian and Yin, Xunyuan},
+    journal={arXiv:2408.16338},
+    year={2024}
+    }
+```
 
 
 ## License

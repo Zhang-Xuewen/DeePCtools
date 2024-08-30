@@ -167,6 +167,22 @@ Figure of control peformance under first config:
 ![peformance](https://github.com/QiYuan-Zhang/DeePCtools/assets/53491122/b662fe31-b2ee-43b2-9c38-98673b2ddfb1)
 
 
+
+## Application
+
+This project has been applied and used in the following papers:
+
+- **Deep DeePC: Data-enabled predictive control with low or no online optimization using deep learning**: [paper](https://arxiv.org/abs/2408.16338) & [source code](https://github.com/QiYuan-Zhang/Deep-DeePC)
+```
+    @article{zhang2024deepdeepc,
+    title={Deep DeePC: Data-enabled predictive control with low or no online optimization using deep learnin},
+    author={Zhang, Xuewen and Zhang, Kaixiang and Li, Zhaojian and Yin, Xunyuan},
+    journal={arXiv:2408.16338},
+    year={2024}
+    }
+```
+
+
 ## License
 
 The project is released under the APACHE license. See [LICENSE](https://github.com/QiYuan-Zhang/DeePCtools/blob/8dbc2458966214bf9885f4d622e20c3b840641e2/LICENSE) for details.
