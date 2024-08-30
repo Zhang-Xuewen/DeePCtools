@@ -6,6 +6,8 @@ If you have questions, remarks, technical issues etc. feel free to use the issue
 > Introduction: [link](https://qiyuan-zhang.github.io/my-toolbox/2024/04/15/Developed-deepctools.html)
 > 
 > PyPI site: [link](https://pypi.org/project/deepctools/)
+>
+> Please be sure to explicitly **acknowledge** its use if you incorporate it into your work.
 
 ## I. How to use
 
@@ -204,7 +206,7 @@ This project has been applied and used in the following papers:
 
 ## License
 
-This project is developed by `Xuewen Zhang` (xuewen.zhang741@outlook.com).
+This project is developed by `Xuewen Zhang` (xuewen.zhang741@outlook.com). Please be sure to explicitly **acknowledge** its use if you incorporate it into your work.
 
 The project is released under the APACHE license. See [LICENSE](https://github.com/QiYuan-Zhang/DeePCtools/blob/main/LICENSE) for details.
 
