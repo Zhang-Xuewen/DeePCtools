@@ -233,10 +233,10 @@ class deepctools():
                 lbc_list.append(np.tile(lb, self.Np))
                 ubc_list.append(np.tile(ub, self.Np))
 
-            Hc = np.concatenate(Hc_list)
-            lbc = np.concatenate(lbc_list).flatten()
-            ubc = np.concatenate(ubc_list).flatten()
-        return Hc, lbc.tolist(), ubc.tolist()
+                Hc = np.concatenate(Hc_list)
+                lbc = np.concatenate(lbc_list).flatten().tolist()
+                ubc = np.concatenate(ubc_list).flatten().tolist()
+        return Hc, lbc, ubc
 
 
     def _init_variables(self):
