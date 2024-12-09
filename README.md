@@ -3,7 +3,7 @@ A wrapped package for Data-enabled predictive control (DeePC) implementation. In
 
 If you have questions, remarks, technical issues etc. feel free to use the issues page of this repository. I am looking forward to your feedback and the discussion.
 
-> Introduction: [link](https://qiyuan-zhang.github.io/my-toolbox/2024/04/15/Developed-deepctools.html)
+> Introduction: [link](https://Zhang-Xuewen.github.io/my-toolbox/2024/04/15/Developed-deepctools.html)
 > 
 > PyPI site: [link](https://pypi.org/project/deepctools/)
 >
