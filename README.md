@@ -191,6 +191,8 @@ Figure of control peformance under first config:
 
 - 1.1.4: debug for DeePC without inequality constraints
 
+- 1.1.5: debug for DeePC without inequality constraints
+
 ## Application
 
 This project has been applied and used in the following papers:

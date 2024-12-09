@@ -123,7 +123,7 @@ class deepctools():
         self._checkvar()
 
         # init inequality constrains
-        self.Hc, self.lbc_ineq, self.ubc_ineq = self._init_ineq_cons(ineqconidx, ineqconbd)
+        self.Hc, self.lbc_ineq, self.ubc_ineq, self.ineq_flag = self._init_ineq_cons(ineqconidx, ineqconbd)
 
         # init the casadi variables
         self._init_variables()
@@ -210,6 +210,7 @@ class deepctools():
         if ineqconidx is None:
             print(">> DeePC design have no constraints on 'u' and 'y'.")
             Hc, lbc, ubc = [], [], []
+            ineq_flag = False
         else:
             Hc_list = []
             lbc_list = []
@@ -233,10 +234,11 @@ class deepctools():
                 lbc_list.append(np.tile(lb, self.Np))
                 ubc_list.append(np.tile(ub, self.Np))
 
-                Hc = np.concatenate(Hc_list)
-                lbc = np.concatenate(lbc_list).flatten().tolist()
-                ubc = np.concatenate(ubc_list).flatten().tolist()
-        return Hc, lbc, ubc
+            Hc = np.concatenate(Hc_list)
+            lbc = np.concatenate(lbc_list).flatten().tolist()
+            ubc = np.concatenate(ubc_list).flatten().tolist()
+            ineq_flag = True
+        return Hc, lbc, ubc, ineq_flag
 
 
     def _init_variables(self):
@@ -358,9 +360,10 @@ class deepctools():
             ubc += [0]
 
         # inequality constrains:    ulb <= Uf_u * g <= uub --> only original u
-        C += [cs.mtimes(self.Hc, g)]
-        lbc.extend(self.lbc_ineq)
-        ubc.extend(self.ubc_ineq)
+        if self.ineq_flag:
+            C += [cs.mtimes(self.Hc, g)]
+            lbc.extend(self.lbc_ineq)
+            ubc.extend(self.ubc_ineq)
 
         # formulate the nlp prolbem
         nlp_prob = {'f': obj, 'x': self.optimizing_target, 'p': self.parameters, 'g': cs.vertcat(*C)}
@@ -463,9 +466,10 @@ class deepctools():
             ubc += [0]
 
         # inequality constrains:    ulb <= Uf_u * g <= uub --> only original u
-        C += [cs.mtimes(self.Hc, g)]
-        lbc.extend(self.lbc_ineq)
-        ubc.extend(self.ubc_ineq)
+        if self.ineq_flag:
+            C += [cs.mtimes(self.Hc, g)]
+            lbc.extend(self.lbc_ineq)
+            ubc.extend(self.ubc_ineq)
 
         # formulate the nlp prolbem
         nlp_prob = {'f': obj, 'x': self.optimizing_target, 'p': self.parameters, 'g': cs.vertcat(*C)}
